@@ -1,8 +1,8 @@
-#CheckFlare 🚦
+# CheckFlare 🚦
 
 CheckFlare is a small but powerful tool for developers who want to test Cloudflare’s Turnstile CAPTCHA quickly and easily. Whether you’re building a new site or updating an existing one, CheckFlare ensures your CAPTCHA setup works before going live. ⚡
 
-###🌟 Features
+### 🌟 Features
 
 Quick Setup ⏱️: Add your Cloudflare site and secret keys in seconds.
 
@@ -12,7 +12,7 @@ Non-Interactive Mode 👻: Test invisible CAPTCHA functionality with minimal use
 
 Lightweight 🧩: Minimal code, maximum efficiency.
 
-###🚀 Getting Started
+### 🚀 Getting Started
 
 Clone the repository:
 
@@ -23,6 +23,6 @@ Enter your Cloudflare site key and secret key in the configuration file.
 
 Launch locally and watch the CAPTCHA widget appear and function seamlessly. ✅
 
-###💡 Why Use CheckFlare?
+### 💡 Why Use CheckFlare?
 
 CheckFlare is perfect for developers who want a stress-free CAPTCHA test environment. It helps you verify accessibility, responsiveness, and non-interactive mode behavior without deploying to production. No surprises, just smooth testing! 🌈
