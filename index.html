@@ -1,0 +1,110 @@
+<!-- public/index.html -->
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Turnstile Quick Test</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; font-family:Arial,Helvetica,sans-serif; }
+    .col { display:flex; flex-direction:column; align-items:center; }
+    img.emoji { height: 12.5vh; width: auto; user-select:none; }
+    .captcha { margin-top: 1cm; display:flex; justify-content:center; align-items:center; }
+    .controls { margin-bottom: 1rem; display:flex; gap:.5rem; align-items:center; }
+    input.sitekey { padding:.5rem; min-width:300px; }
+    button { padding:.5rem .75rem; cursor:pointer; }
+    .status { margin-top:.5rem; font-size:.9rem; }
+  </style>
+</head>
+<body>
+  <div class="col">
+    <div class="controls">
+      <input id="siteKeyInput" class="sitekey" placeholder="Paste Turnstile site key here" />
+      <button id="renderBtn">Render</button>
+    </div>
+
+    <!-- Emoji image that swaps after verification -->
+    <img id="emoji" class="emoji" src="before.png" alt="not verified" />
+
+    <div class="captcha" id="captchaContainer"></div>
+
+    <div class="status" id="status">Not verified</div>
+  </div>
+
+  <!-- Turnstile script (loaded once) -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+  <script>
+    const renderBtn = document.getElementById("renderBtn");
+    const siteKeyInput = document.getElementById("siteKeyInput");
+    const captchaContainer = document.getElementById("captchaContainer");
+    const emoji = document.getElementById("emoji");
+    const status = document.getElementById("status");
+    let widgetId = null;
+
+    function renderTurnstile(sitekey) {
+      status.textContent = "Loading widget...";
+
+      // Clear previous container
+      captchaContainer.innerHTML = "";
+
+      // If turnstile is not ready yet, wait a bit
+      const waitFor = () => {
+        if (window.turnstile && typeof window.turnstile.render === "function") {
+          // render widget
+          widgetId = window.turnstile.render(captchaContainer, {
+            sitekey,
+            callback: token => {
+              status.textContent = "Got token — verifying...";
+              // Verify token on server
+              fetch("/verify", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ token })
+              })
+              .then(r => r.json())
+              .then(data => {
+                if (data && data.success) {
+                  status.textContent = "Verified ✓";
+                  emoji.src = "after.png";
+                } else {
+                  status.textContent = "Verification failed";
+                  emoji.src = "before.png";
+                  console.log("verify response", data);
+                }
+              })
+              .catch(err => {
+                status.textContent = "Error verifying";
+                console.error(err);
+              });
+            },
+            "expired-callback": function(){ 
+              status.textContent = "Token expired — re-check";
+              emoji.src = "before.png";
+            }
+          });
+        } else {
+          setTimeout(waitFor, 200);
+        }
+      };
+      waitFor();
+    }
+
+    renderBtn.addEventListener("click", () => {
+      const sitekey = siteKeyInput.value.trim();
+      if (!sitekey) {
+        alert("0x4AAAAAAB-k69wdhmt4mhhE");
+        return;
+      }
+      renderTurnstile(sitekey);
+    });
+
+    // Optional: auto-render if sitekey provided in URL ?sitekey=...
+    const params = new URLSearchParams(location.search);
+    if (params.get("sitekey")) {
+      siteKeyInput.value = params.get("sitekey");
+      renderBtn.click();
+    }
+  </script>
+</body>
+</html>
