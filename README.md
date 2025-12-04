@@ -12,17 +12,6 @@ Non-Interactive Mode 👻: Test invisible CAPTCHA functionality with minimal use
 
 Lightweight 🧩: Minimal code, maximum efficiency.
 
-### 🚀 Getting Started
-
-Clone the repository:
-
-git clone https://github.com/yourusername/checkflare.git
-
-
-Enter your Cloudflare site key and secret key in the configuration file.
-
-Launch locally and watch the CAPTCHA widget appear and function seamlessly. ✅
-
 ### 💡 Why Use CheckFlare?
 
 CheckFlare is perfect for developers who want a stress-free CAPTCHA test environment. It helps you verify accessibility, responsiveness, and non-interactive mode behavior without deploying to production. No surprises, just smooth testing! 🌈
